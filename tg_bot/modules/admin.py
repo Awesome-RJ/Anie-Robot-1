@@ -52,6 +52,10 @@ def promote(bot: Bot, update: Update, args: List[str]) -> str:
     if user_id == bot.id:
         message.reply_text(tld(chat.id, "I can't promote myself! Get an admin to do it for me."))
         return ""
+    
+    if chat.get_member(user_id).can_promote_members: # get the user id           
+           update.effective_message.reply_text("You are missing the following rights to use this command: CanPromoteMembers")
+           return 
 
     # set same perms as bot - bot can't assign higher perms than itself!
     bot_member = chatD.get_member(bot.id)
@@ -111,6 +115,10 @@ def demote(bot: Bot, update: Update, args: List[str]) -> str:
     if user_id == bot.id:
         message.reply_text(tld(chat.id, "I can't demote myself!"))
         return ""
+
+    if chat.get_member(user_id).can_promote_members: # get the user id           
+           update.effective_message.reply_text("You are missing the following rights to use this command: CanPromoteMembers")
+           return 
 
     try:
         bot.promoteChatMember(int(chatD.id), int(user_id),
