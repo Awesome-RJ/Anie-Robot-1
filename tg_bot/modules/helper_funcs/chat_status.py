@@ -252,6 +252,7 @@ def can_promote(func):
                             f"Make sure I'm admin there and can appoint new admins.")
 
         if chat.get_member(bot.id).can_promote_members:
+            update.effective_message.reply_text("You don't have sufficient rights")
             return func(bot, update, *args, **kwargs)
         else:
             update.effective_message.reply_text(cant_promote, parse_mode=ParseMode.HTML)
@@ -304,3 +305,15 @@ def connection_status(func):
 from tg_bot.modules import connection
 
 connected = connection.connected
+
+def user_can_ban(func):
+    @wraps(func)
+    def user_is_banhammer(bot: Bot, update: Update, *args, **kwargs):
+        user = update.effective_user.id
+        member = update.effective_chat.get_member(user)
+        if not (member.can_restrict_members or member.status == "creator") and not user in SUDO_USERS:
+            update.effective_message.reply_text("Sorry you don't have sufficient rights !")
+            return ""
+        return func(bot, update, *args, **kwargs)
+    
+    return user_is_banhammer
