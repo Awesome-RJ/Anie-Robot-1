@@ -252,7 +252,6 @@ def can_promote(func):
                             f"Make sure I'm admin there and can appoint new admins.")
 
         if chat.get_member(bot.id).can_promote_members:
-            update.effective_message.reply_text("You don't have sufficient rights")
             return func(bot, update, *args, **kwargs)
         else:
             update.effective_message.reply_text(cant_promote, parse_mode=ParseMode.HTML)
