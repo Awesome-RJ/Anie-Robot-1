@@ -7,8 +7,7 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
 
 import tg_bot.modules.sql.users_sql as sql
 
-from tg_bot import dispatcher, OWNER_ID, LOGGER, DEV_USERS
-from tg_bot.modules.helper_funcs.chat_status import sudo_plus, dev_plus
+from tg_bot import dispatcher, OWNER_ID, LOGGER, DEV_USERS, SUDO_USERS
 
 USERS_GROUP = 4
 DEV_AND_MORE = DEV_USERS.append(int(OWNER_ID))
@@ -47,7 +46,6 @@ def get_user_id(username):
 
 
 @run_async
-@dev_plus
 def broadcast(bot: Bot, update: Update):
 
     to_send = update.effective_message.text.split(None, 1)
@@ -89,7 +87,6 @@ def log_user(bot: Bot, update: Update):
 
 
 @run_async
-@sudo_plus
 def chats(bot: Bot, update: Update):
 
     all_chats = sql.get_all_chats() or []
@@ -113,9 +110,9 @@ def __migrate__(old_chat_id, new_chat_id):
 
 __help__ = ""  # no help string
 
-BROADCAST_HANDLER = CommandHandler("broadcast", broadcast)
+BROADCAST_HANDLER = CommandHandler("broadcast", broadcast, filters=Filters.user(OWNER_ID))
 USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user)
-CHATLIST_HANDLER = CommandHandler("chatlist", chats)
+CHATLIST_HANDLER = CommandHandler("chatlist", chats, filters=Filters.user(SUDO_USERS))
 
 dispatcher.add_handler(USER_HANDLER, USERS_GROUP)
 dispatcher.add_handler(BROADCAST_HANDLER)
