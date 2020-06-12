@@ -8,7 +8,7 @@ from telegram.ext import CommandHandler, run_async
 from telegram.utils.helpers import mention_html
 
 from tg_bot import dispatcher, LOGGER, TIGER_USERS
-from tg_bot.modules.helper_funcs.chat_status import (bot_admin, user_admin, is_user_admin, can_restrict,
+from tg_bot.modules.helper_funcs.chat_status import (bot_admin, user_admin, is_user_admin, can_restrict, user_can_ban
                                                      connection_status)
 from tg_bot.modules.helper_funcs.extraction import extract_user, extract_user_and_text
 from tg_bot.modules.helper_funcs.string_handling import extract_time
@@ -44,6 +44,7 @@ def check_user(user_id: int, bot: Bot, chat: Chat) -> Optional[str]:
 @connection_status
 @bot_admin
 @user_admin
+@user_can_ban
 @loggable
 def mute(bot: Bot, update: Update, args: List[str]) -> str:
     chat = update.effective_chat
@@ -83,6 +84,7 @@ def mute(bot: Bot, update: Update, args: List[str]) -> str:
 @connection_status
 @bot_admin
 @user_admin
+@user_can_ban
 @loggable
 def unmute(bot: Bot, update: Update, args: List[str]) -> str:
     chat = update.effective_chat
@@ -124,6 +126,7 @@ def unmute(bot: Bot, update: Update, args: List[str]) -> str:
 @run_async
 @connection_status
 @bot_admin
+@user_can_ban
 @can_restrict
 @user_admin
 @loggable
