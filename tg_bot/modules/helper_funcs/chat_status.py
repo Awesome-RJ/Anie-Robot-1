@@ -278,8 +278,8 @@ def can_restrict(func):
         if chat.get_member(bot.id).can_restrict_members:
            return func(bot, update, *args, **kwargs)
 
-        elif chat.get_member(user.id).can_restrict_members: # get the user id 
- 
+        elif chat.get_member(user.id).can_restrict_members: # get the user id           
+           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
            return # simply return
 
         else:
