@@ -44,11 +44,6 @@ def promote(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text(tld(chat.id, "You don't seem to be referring to a user."))
         return ""
 
-    user_member = chatD.get_member(user_id)
-    if user_member.status == 'administrator' or user_member.status == 'creator':
-        message.reply_text(tld(chat.id, "How am I meant to promote someone that's already an admin?"))
-        return ""
-
     if user_id == bot.id:
         message.reply_text(tld(chat.id, "I can't promote myself! Get an admin to do it for me."))
         return ""
@@ -106,10 +101,6 @@ def demote(bot: Bot, update: Update, args: List[str]) -> str:
     user_member = chatD.get_member(user_id)
     if user_member.status == 'creator':
         message.reply_text(tld(chat.id, "This person CREATED the chat, how would I demote them?"))
-        return ""
-
-    if not user_member.status == 'administrator':
-        message.reply_text(tld(chat.id, "Can't demote what wasn't promoted!"))
         return ""
 
     if user_id == bot.id:
