@@ -154,7 +154,7 @@ def start(bot: Bot, update: Update, args: List[str]):
 
             keyboard += [[InlineKeyboardButton(text=tld(chat.id, "Updates ❓"), url="https://telegra.ph/Anie-Robot-05-27")]]
             
-            keyboard += [[InlineKeyboardButton(text="My Commands ⚙️", callback_data="Back")]]
+            keyboard += [[InlineKeyboardButton(text="My Commands ⚙️", callback_data="help_back")]]
     
             update.effective_message.reply_text(PM_START_TEXT.format(escape_markdown(first_name), bot.first_name), reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=False, parse_mode=ParseMode.MARKDOWN)
 
