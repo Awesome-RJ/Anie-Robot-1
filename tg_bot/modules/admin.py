@@ -21,6 +21,7 @@ from tg_bot.modules.translations.strings import tld
 @run_async
 @bot_admin
 @user_admin
+@can_promote
 @loggable
 def promote(bot: Bot, update: Update, args: List[str]) -> str:
     message = update.effective_message  # type: Optional[Message]
@@ -48,9 +49,9 @@ def promote(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text(tld(chat.id, "I can't promote myself! Get an admin to do it for me."))
         return ""
     
-    if chat.get_member(user_id).can_promote_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanPromoteMembers")
-           return 
+    if user_member.status == 'administrator' or user_member.status == 'creator':
+        message.reply_text("How am I meant to promote someone that's already an admin?")
+        return log_message
 
     # set same perms as bot - bot can't assign higher perms than itself!
     bot_member = chatD.get_member(bot.id)
@@ -75,6 +76,7 @@ def promote(bot: Bot, update: Update, args: List[str]) -> str:
 @run_async
 @bot_admin
 @user_admin
+@can_promote
 @loggable
 def demote(bot: Bot, update: Update, args: List[str]) -> str:
     chat = update.effective_chat  # type: Optional[Chat]
@@ -107,9 +109,9 @@ def demote(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text(tld(chat.id, "I can't demote myself!"))
         return ""
 
-    if chat.get_member(user_id).can_promote_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanPromoteMembers")
-           return 
+    if user_member.status == 'administrator' or user_member.status == 'creator':
+        message.reply_text("How am I meant to promote someone that's already an admin?")
+        return log_message
 
     try:
         bot.promoteChatMember(int(chatD.id), int(user_id),
