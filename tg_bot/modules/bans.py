@@ -46,6 +46,10 @@ def ban(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text("Oh yeah, ban myself, noob!")
         return log_message
 
+    if chat.get_member(user_id).can_restrict_members: # get the user id           
+           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
+           return # simply return
+
     # dev users to bypass whitelist protection incase of abuse
     if is_user_ban_protected(chat, user_id, member) and user not in DEV_USERS:
         message.reply_text("This user has immunity - I can't ban them.")
