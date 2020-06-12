@@ -266,10 +266,7 @@ def can_restrict(func):
         update_chat_title = chat.title
         message_chat_title = update.effective_message.chat.title
 
-        whois = extract_user(update.effective_message, args) # get the user
-
-        user = bot.get_chat(whois) # extract the user 
-
+  
         if update_chat_title == message_chat_title:
             cant_restrict = f"I can't restrict people here!\nMake sure I'm admin and can restrict users."
         else:
@@ -277,10 +274,6 @@ def can_restrict(func):
      
         if chat.get_member(bot.id).can_restrict_members:
            return func(bot, update, *args, **kwargs)
-
-        elif chat.get_member(user.id).can_restrict_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
-           return # simply return
 
         else:
             update.effective_message.reply_text(cant_restrict, parse_mode=ParseMode.HTML)
