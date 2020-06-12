@@ -146,7 +146,7 @@ def start(bot: Bot, update: Update, args: List[str]):
         else:
             first_name = update.effective_user.first_name
             chat = update.effective_chat  # type: Optional[Chat]
-            text = PM_START
+            text = PM_START_TEXT
     
             keyboard = [[InlineKeyboardButton(text=tld(chat.id, "Add me to your group ♥️"), url="t.me/AnieRobot?startgroup=true")]]
 
@@ -154,7 +154,7 @@ def start(bot: Bot, update: Update, args: List[str]):
 
             keyboard += [[InlineKeyboardButton(text=tld(chat.id, "Updates ❓"), url="https://telegra.ph/Anie-Robot-05-27")]]
             
-            keyboard += [[InlineKeyboardButton(text="My Commands ⚙️", callback_data="help_back")]]
+            keyboard += [[InlineKeyboardButton(text="My Commands ⚙️", callback_data="Back")]]
     
             update.effective_message.reply_text(PM_START.format(escape_markdown(first_name), bot.first_name), reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=False, parse_mode=ParseMode.MARKDOWN)
 
