@@ -12,7 +12,7 @@ from telegram.utils.helpers import escape_markdown, mention_html
 
 from tg_bot import dispatcher, TOKEN
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import bot_admin, can_promote, user_admin, can_pin, connection_status, user_can_restrict
+from tg_bot.modules.helper_funcs.chat_status import bot_admin, can_promote, user_admin, can_pin, connection_status, user_can_restrict, user_can_pin
 from tg_bot.modules.helper_funcs.extraction import extract_user, extract_user_and_text
 from tg_bot.modules.log_channel import loggable
 from tg_bot.modules.connection import connected
@@ -155,6 +155,7 @@ def demote(bot: Bot, update: Update, args: List[str]) -> str:
 @bot_admin
 @can_pin
 @user_admin
+@user_can_pin
 @loggable
 def pin(bot: Bot, update: Update, args: List[str]) -> str:
     user = update.effective_user  # type: Optional[User]
@@ -187,6 +188,7 @@ def pin(bot: Bot, update: Update, args: List[str]) -> str:
 @bot_admin
 @can_pin
 @user_admin
+@user_can_pin
 @loggable
 def unpin(bot: Bot, update: Update) -> str:
     chat = update.effective_chat
