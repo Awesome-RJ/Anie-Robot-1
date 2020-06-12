@@ -4,6 +4,7 @@ from telegram import Bot, Chat, ChatMember, Update, ParseMode
 
 from tg_bot import dispatcher, DEL_CMDS, WHITELIST_USERS, TIGER_USERS, SUPPORT_USERS, SUDO_USERS, DEV_USERS
 
+from tg_bot.modules.helper_funcs.extraction import extract_user # needed
 
 def is_whitelist_plus(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
     return any(user_id in user for user in [WHITELIST_USERS, TIGER_USERS, SUPPORT_USERS, SUDO_USERS, DEV_USERS])
@@ -265,13 +266,22 @@ def can_restrict(func):
         update_chat_title = chat.title
         message_chat_title = update.effective_message.chat.title
 
+        whois = extract_user(update.effective_message, args) # get the user
+
+        user = bot.get_chat(whois) # extract the user 
+
         if update_chat_title == message_chat_title:
             cant_restrict = f"I can't restrict people here!\nMake sure I'm admin and can restrict users."
         else:
             cant_restrict = f"I can't restrict people in <b>{update_chat_title}</b>!\nMake sure I'm admin there and can restrict users."
-
+     
         if chat.get_member(bot.id).can_restrict_members:
-            return func(bot, update, *args, **kwargs)
+           return func(bot, update, *args, **kwargs)
+
+        elif chat.get_member(user.id).can_restrict_members: # get the user id 
+ 
+           return # simply return
+
         else:
             update.effective_message.reply_text(cant_restrict, parse_mode=ParseMode.HTML)
 
