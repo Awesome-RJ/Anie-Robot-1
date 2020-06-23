@@ -153,8 +153,8 @@ def __chat_settings__(chat_id, user_id):
     return "There are {} blacklisted words.".format(blacklisted)
 
 
-# def __stats__():
-    # return "{} blacklist triggers, across {} chats.".format(sql.num_blacklist_filters(), sql.num_blacklist_filter_chats())
+def __stats__():
+    return "{} blacklist triggers, across {} chats.".format(sql.num_blacklist_filters(), sql.num_blacklist_filter_chats())
 
 
 __help__ = """
