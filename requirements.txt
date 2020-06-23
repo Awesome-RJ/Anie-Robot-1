@@ -18,11 +18,9 @@ CurrencyConverter
 googletrans
 jikanpy
 speedtest-cli
-coffeehouse
 tswift
 gTTS
 wikipedia
 pyowm
 tabulate
 parsel
-deeppyer
