@@ -452,6 +452,7 @@ Some memes command, find it all out yourself!
 /forbesify: Correct your punctuations better use the advanged spell module 
 /shout: Write anything that u want it to should
 /zalgofy: reply to a message to g̫̞l̼̦i̎͡tͫ͢c̘ͭh̛̗ it out!
+/deepfry: Deepfry Any Image by replying this command.
 """
 
 __mod_name__ = "Memes"
