@@ -116,8 +116,9 @@ def temp_ban(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text("I'm not gonna BAN myself, are you crazy?")
         return log_message
 
+    
     if chat.get_member(user_id).can_restrict_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
+           update.effective_message.reply_text("Why do you want to ban an admin? I don't have any right to ban an admin")
            return # simply return
 
     if is_user_ban_protected(chat, user_id, member):
@@ -203,8 +204,9 @@ def punch(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text("Yeahhh I'm not gonna do that.")
         return log_message
 
+    
     if chat.get_member(user_id).can_restrict_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
+           update.effective_message.reply_text("Why do you want to ban an admin? I don't have any right to ban an admin")
            return # simply return
      
     if is_user_ban_protected(chat, user_id):
@@ -266,9 +268,9 @@ def unban(bot: Bot, update: Update, args: List[str]) -> str:
         message.reply_text("I doubt that's a user.")
         return log_message
 
-
+    
     if chat.get_member(user_id).can_restrict_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
+           update.effective_message.reply_text("Why do you want to ban an admin? I don't have any right to ban an admin")
            return # simply return
 
     try:
