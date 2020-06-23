@@ -48,7 +48,7 @@ def ban(bot: Bot, update: Update, args: List[str]) -> str:
         return log_message
 
     if chat.get_member(user_id).can_restrict_members: # get the user id           
-           update.effective_message.reply_text("You are missing the following rights to use this command: CanRestrictMembers")
+           update.effective_message.reply_text("Why do you want to ban an admin? I don't have any right to ban an admin")
            return # simply return
 
     # dev users to bypass whitelist protection incase of abuse
