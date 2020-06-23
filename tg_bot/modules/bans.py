@@ -206,7 +206,7 @@ def punch(bot: Bot, update: Update, args: List[str]) -> str:
 
     
     if chat.get_member(user_id).can_restrict_members: # get the user id           
-           update.effective_message.reply_text("Why do you want to punch an admin? I don't have any right to ban an admin")
+           update.effective_message.reply_text("Why do you want to punch an admin? I don't have any right to punch an admin")
            return # simply return
      
     if is_user_ban_protected(chat, user_id):
