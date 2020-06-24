@@ -53,12 +53,12 @@ def restart(bot: Bot, update: Update):
 
 
 LEAVE_HANDLER = CommandHandler("leave", leave, pass_args=True)
-GITPULL_HANDLER = CommandHandler("gitpull", gitpull)
-RESTART_HANDLER = CommandHandler("reboot", restart)
+# GITPULL_HANDLER = CommandHandler("gitpull", gitpull)
+# RESTART_HANDLER = CommandHandler("reboot", restart)
 
 dispatcher.add_handler(LEAVE_HANDLER)
-dispatcher.add_handler(GITPULL_HANDLER)
-dispatcher.add_handler(RESTART_HANDLER)
+# dispatcher.add_handler(GITPULL_HANDLER)
+# dispatcher.add_handler(RESTART_HANDLER)
 
 __mod_name__ = "Dev"
 __handlers__ = [LEAVE_HANDLER, GITPULL_HANDLER, RESTART_HANDLER]
