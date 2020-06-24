@@ -61,4 +61,4 @@ dispatcher.add_handler(LEAVE_HANDLER)
 # dispatcher.add_handler(RESTART_HANDLER)
 
 __mod_name__ = "Dev"
-__handlers__ = [LEAVE_HANDLER, GITPULL_HANDLER, RESTART_HANDLER]
+# __handlers__ = [LEAVE_HANDLER, GITPULL_HANDLER, RESTART_HANDLER]
