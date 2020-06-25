@@ -24,3 +24,6 @@ wikipedia
 pyowm
 tabulate
 parsel
+scikit-image
+youtube.dl
+search_engine_parse
