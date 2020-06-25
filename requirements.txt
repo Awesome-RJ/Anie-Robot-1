@@ -26,4 +26,4 @@ tabulate
 parsel
 scikit-image
 youtube.dl
-search_engine_parse
+search_engine_parser
