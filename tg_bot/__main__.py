@@ -56,7 +56,11 @@ Hello! my name *{}*.
 
 {}
 And the following:
-""".format(dispatcher.bot.first_name, "" if not ALLOW_EXCL else "\nAll commands can either be used with / or !.\n")
+""".format(
+    dispatcher.bot.first_name,
+    "\nAll commands can either be used with / or !.\n" if ALLOW_EXCL else "",
+)
+
 
 
 IMPORTED = {}
@@ -75,7 +79,7 @@ for module_name in ALL_MODULES:
     if not hasattr(imported_module, "__mod_name__"):
         imported_module.__mod_name__ = imported_module.__name__
 
-    if not imported_module.__mod_name__.lower() in IMPORTED:
+    if imported_module.__mod_name__.lower() not in IMPORTED:
         IMPORTED[imported_module.__mod_name__.lower()] = imported_module
     else:
         raise Exception("Can't have two modules with the same name! Please change one")
@@ -126,7 +130,7 @@ def test(bot: Bot, update: Update):
 @run_async
 def start(bot: Bot, update: Update, args: List[str]):
     if update.effective_chat.type == "private":
-        if len(args) >= 1:
+        if args:
             if args[0].lower() == "help":
                 send_help(update.effective_chat.id, HELP_STRINGS)
             elif args[0].lower() == "disasters":
@@ -147,13 +151,13 @@ def start(bot: Bot, update: Update, args: List[str]):
             first_name = update.effective_user.first_name
             chat = update.effective_chat  # type: Optional[Chat]
             text = PM_START_TEXT
-    
+
             keyboard = [[InlineKeyboardButton(text=tld(chat.id, "Add me to your group ♥️"), url="t.me/AnieRobot?startgroup=true")]]
 
             keyboard += [[InlineKeyboardButton(text=tld(chat.id, "Join our support chat 🌍"), url="https://t.me/AnieSupport")]]
 
             keyboard += [[InlineKeyboardButton(text=tld(chat.id, "Updates ❓"), url="https://telegra.ph/Anie-Robot-05-27")]]
-            
+
             update.effective_message.reply_text(PM_START_TEXT.format(escape_markdown(first_name), bot.first_name), reply_markup=InlineKeyboardMarkup(keyboard), disable_web_page_preview=False, parse_mode=ParseMode.MARKDOWN)
 
 
@@ -239,13 +243,11 @@ def help_button(bot: Bot, update: Update):
         bot.answer_callback_query(query.id)
         query.message.delete()
     except BadRequest as excp:
-        if excp.message == "Message is not modified":
-            pass
-        elif excp.message == "Query_id_invalid":
-            pass
-        elif excp.message == "Message can't be deleted":
-            pass
-        else:
+        if excp.message not in [
+            "Message is not modified",
+            "Query_id_invalid",
+            "Message can't be deleted",
+        ]:
             LOGGER.exception("Exception in help buttons. %s", str(query.data))
 
 
@@ -309,7 +311,7 @@ def imdb_searchdata(bot: Bot, update: Update):
 @run_async
 def imdb(bot: Bot, update: Update, args):
     message = update.effective_message
-    query = ''.join([arg + '_' for arg in args]).lower()
+    query = ''.join([f'{arg}_' for arg in args]).lower()
     if not query:
         bot.send_message(
             message.chat.id,
@@ -322,8 +324,7 @@ def imdb(bot: Bot, update: Update, args):
     for line in json_url:
         suggs_raw = line
     skip_chars = 6 + len(query)
-    suggs_dict = json.loads(suggs_raw[skip_chars:][:-1])
-    if suggs_dict:
+    if suggs_dict := json.loads(suggs_raw[skip_chars:][:-1]):
         button_list = [[
                 InlineKeyboardButton(
                     text = str(sugg['l'] + ' (' + str(sugg['y']) + ')'), 
@@ -336,8 +337,6 @@ def imdb(bot: Bot, update: Update, args):
             'Which one? ',
             reply_markup = reply_markup
         )
-    else:
-        pass
 
 
 def send_settings(chat_id, user_id, user=False):
@@ -352,18 +351,17 @@ def send_settings(chat_id, user_id, user=False):
             dispatcher.bot.send_message(user_id, "Seems like there aren't any user specific settings available :'(",
                                         parse_mode=ParseMode.MARKDOWN)
 
+    elif CHAT_SETTINGS:
+        chat_name = dispatcher.bot.getChat(chat_id).title
+        dispatcher.bot.send_message(user_id,
+                                    text="Which module would you like to check {}'s settings for?".format(
+                                        chat_name),
+                                    reply_markup=InlineKeyboardMarkup(
+                                        paginate_modules(0, CHAT_SETTINGS, "stngs", chat=chat_id)))
     else:
-        if CHAT_SETTINGS:
-            chat_name = dispatcher.bot.getChat(chat_id).title
-            dispatcher.bot.send_message(user_id,
-                                        text="Which module would you like to check {}'s settings for?".format(
-                                            chat_name),
-                                        reply_markup=InlineKeyboardMarkup(
-                                            paginate_modules(0, CHAT_SETTINGS, "stngs", chat=chat_id)))
-        else:
-            dispatcher.bot.send_message(user_id, "Seems like there aren't any chat settings available :'(\nSend this "
-                                                 "in a group chat you're admin in to find its current settings!",
-                                        parse_mode=ParseMode.MARKDOWN)
+        dispatcher.bot.send_message(user_id, "Seems like there aren't any chat settings available :'(\nSend this "
+                                             "in a group chat you're admin in to find its current settings!",
+                                    parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
@@ -421,13 +419,11 @@ def settings_button(bot: Bot, update: Update):
         bot.answer_callback_query(query.id)
         query.message.delete()
     except BadRequest as excp:
-        if excp.message == "Message is not modified":
-            pass
-        elif excp.message == "Query_id_invalid":
-            pass
-        elif excp.message == "Message can't be deleted":
-            pass
-        else:
+        if excp.message not in [
+            "Message is not modified",
+            "Query_id_invalid",
+            "Message can't be deleted",
+        ]:
             LOGGER.exception("Exception in settings buttons. %s", str(query.data))
 
 
@@ -439,19 +435,18 @@ def get_settings(bot: Bot, update: Update):
     args = msg.text.split(None, 1)
 
     # ONLY send settings in PM
-    if chat.type != chat.PRIVATE:
-        if is_user_admin(chat, user.id):
-            text = "Click here to get this chat's settings, as well as yours."
-            msg.reply_text(text,
-                           reply_markup=InlineKeyboardMarkup(
-                               [[InlineKeyboardButton(text="Settings",
-                                                      url="t.me/{}?start=stngs_{}".format(
-                                                          bot.username, chat.id))]]))
-        else:
-            text = "Click here to check your settings."
-
-    else:
+    if chat.type == chat.PRIVATE:
         send_settings(chat.id, user.id, True)
+
+    elif is_user_admin(chat, user.id):
+        text = "Click here to get this chat's settings, as well as yours."
+        msg.reply_text(text,
+                       reply_markup=InlineKeyboardMarkup(
+                           [[InlineKeyboardButton(text="Settings",
+                                                  url="t.me/{}?start=stngs_{}".format(
+                                                      bot.username, chat.id))]]))
+    else:
+        text = "Click here to check your settings."
 
 
 
@@ -511,5 +506,5 @@ def main():
 
 
 if __name__ == '__main__':
-    LOGGER.info("Successfully loaded modules: " + str(ALL_MODULES))
+    LOGGER.info(f"Successfully loaded modules: {str(ALL_MODULES)}")
     main()
