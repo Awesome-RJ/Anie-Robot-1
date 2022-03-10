@@ -18,9 +18,7 @@ from tg_bot.modules.helper_funcs.extraction import extract_user
 @register(pattern="^/type (.*)")
 async def typewriter(typew):
     message = typew.pattern_match.group(1)
-    if message:
-        pass
-    else:
+    if not message:
         await typew.reply("`Give a text to type!`")
         return
     typing_symbol = "|"
@@ -28,8 +26,8 @@ async def typewriter(typew):
     now = await typew.reply(typing_symbol)
     await asyncio.sleep(2)
     for character in message:
-        old_text = old_text + "" + character
-        typing_text = old_text + "" + typing_symbol
+        old_text = f'{old_text}{character}'
+        typing_text = f'{old_text}{typing_symbol}'
         await now.edit(typing_text)
         await asyncio.sleep(2)
         await now.edit(old_text)

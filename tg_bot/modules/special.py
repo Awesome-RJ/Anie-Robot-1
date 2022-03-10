@@ -32,9 +32,12 @@ def quickscope(bot: Bot, update: Update, args: List[int]):
         update.effective_message.reply_text("You don't seem to be referring to a chat/user")
     try:
         bot.kick_chat_member(chat_id, to_kick)
-        update.effective_message.reply_text("Attempted banning " + to_kick + " from" + chat_id)
+        update.effective_message.reply_text(
+            f"Attempted banning {to_kick} from{chat_id}"
+        )
+
     except BadRequest as excp:
-        update.effective_message.reply_text(excp.message + " " + to_kick)
+        update.effective_message.reply_text(f'{excp.message} {to_kick}')
 
 
 @run_async
@@ -46,26 +49,25 @@ def quickunban(bot: Bot, update: Update, args: List[int]):
         update.effective_message.reply_text("You don't seem to be referring to a chat/user")
     try:
         bot.unban_chat_member(chat_id, to_kick)
-        update.effective_message.reply_text("Attempted unbanning " + to_kick + " from" + chat_id)
+        update.effective_message.reply_text(
+            f"Attempted unbanning {to_kick} from{chat_id}"
+        )
+
     except BadRequest as excp:
-        update.effective_message.reply_text(excp.message + " " + to_kick)
+        update.effective_message.reply_text(f'{excp.message} {to_kick}')
 
 
 @run_async
 def banall(bot: Bot, update: Update, args: List[int]):
-    if args:
-        chat_id = str(args[0])
-        all_mems = sql.get_chat_members(chat_id)
-    else:
-        chat_id = str(update.effective_chat.id)
-        all_mems = sql.get_chat_members(chat_id)
+    chat_id = str(args[0]) if args else str(update.effective_chat.id)
+    all_mems = sql.get_chat_members(chat_id)
     for mems in all_mems:
         try:
             bot.kick_chat_member(chat_id, mems.user)
             update.effective_message.reply_text("Tried banning " + str(mems.user))
             sleep(0.1)
         except BadRequest as excp:
-            update.effective_message.reply_text(excp.message + " " + str(mems.user))
+            update.effective_message.reply_text(f'{excp.message} {str(mems.user)}')
             continue
 
 @bot_admin
@@ -97,7 +99,7 @@ def slist(bot: Bot, update: Update):
             user = bot.get_chat(user_id)
             name = "[{}](tg://user?id={})".format(user.first_name + (user.last_name or ""), user.id)
             if user.username:
-                name = escape_html("@" + user.username)
+                name = escape_html(f"@{user.username}")
             text1 += "\n - `{}`".format(name)
         except BadRequest as excp:
             if excp.message == 'Chat not found':
@@ -107,7 +109,7 @@ def slist(bot: Bot, update: Update):
             user = bot.get_chat(user_id)
             name = "[{}](tg://user?id={})".format(user.first_name + (user.last_name or ""), user.id)
             if user.username:
-                name = escape_html("@" + user.username)
+                name = escape_html(f"@{user.username}")
             text2 += "\n - `{}`".format(name)
         except BadRequest as excp:
             if excp.message == 'Chat not found':

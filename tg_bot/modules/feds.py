@@ -74,7 +74,7 @@ def new_fed(bot: Bot, update: Update):
         update.effective_message.reply_text("Please run this command in my PM only!")
         return
     fednam = message.text.split(None, 1)[1]
-    if not fednam == '':
+    if fednam != '':
         fed_id = str(uuid.uuid4())
         fed_name = fednam
         LOGGER.info(fed_id)
@@ -162,23 +162,19 @@ def join_fed(bot: Bot, update: Update, args: List[str]):
     administrators = chat.get_administrators()
     fed_id = sql.get_fed_id(chat.id)
 
-    if user.id in SUDO_USERS:
-        pass
-    else:
+    if user.id not in SUDO_USERS:
         for admin in administrators:
             status = admin.status
             if status == "creator":
                 print(admin)
-                if str(admin.user.id) == str(user.id):
-                    pass
-                else:
+                if str(admin.user.id) != str(user.id):
                     update.effective_message.reply_text("Only the group creator can do it!")
                     return
     if fed_id:
         message.reply_text("Uh, you can only join one federation in a chat.")
         return
 
-    if len(args) >= 1:
+    if args:
         fedd = args[0]
         print(fedd)
         if sql.search_fed_by_id(fedd) == False:
@@ -310,7 +306,7 @@ def fed_info(bot: Bot, update: Update, args: List[str]):
 
     owner = bot.get_chat(info['owner'])
     try:
-        owner_name = owner.first_name + " " + owner.last_name
+        owner_name = f'{owner.first_name} {owner.last_name}'
     except:
         owner_name = owner.first_name
     FEDADMIN = sql.all_fed_users(fed_id)
@@ -355,7 +351,7 @@ def fed_admin(bot: Bot, update: Update, args: List[str]):
     text += "👑 Owner:\n"
     owner = bot.get_chat(info['owner'])
     try:
-        owner_name = owner.first_name + " " + owner.last_name
+        owner_name = f'{owner.first_name} {owner.last_name}'
     except:
         owner_name = owner.first_name
     text += " • {}\n".format(mention_html(owner.id, owner_name))
@@ -459,9 +455,7 @@ def fed_ban(bot: Bot, update: Update, args: List[str]):
             try:
                 bot.kick_chat_member(chat, user_id)
             except BadRequest as excp:
-                if excp.message in FBAN_ERRORS:
-                    pass
-                else:
+                if excp.message not in FBAN_ERRORS:
                     LOGGER.warning("Could not fban in {} because: {}".format(chat, excp.message))
             except TelegramError:
                 pass
@@ -578,9 +572,7 @@ def unfban(bot: Bot, update: Update, args: List[str]):
                 """
 
         except BadRequest as excp:
-            if excp.message in UNFBAN_ERRORS:
-                pass
-            else:
+            if excp.message not in UNFBAN_ERRORS:
                 LOGGER.warning("Cannot remove fban in {} because: {}".format(chat, excp.message))
         except TelegramError:
             pass
@@ -626,7 +618,7 @@ def set_frules(bot: Bot, update: Update, args: List[str]):
         update.effective_message.reply_text("Only federation admins can do this!")
         return
 
-    if len(args) >= 1:
+    if args:
         msg = update.effective_message  # type: Optional[Message]
         raw_text = msg.text
         args = raw_text.split(None, 1)  # use python's maxsplit to separate cmd and args
@@ -666,7 +658,7 @@ def fed_broadcast(bot: Bot, update: Update, args: List[str]):
     user = update.effective_user  # type: Optional[User]
     fed_id = sql.get_fed_id(chat.id)
 
- 
+
     if is_user_fed_admin(fed_id, user.id) == False:
         update.effective_message.reply_text("Only federation admins can do this!")
         return
@@ -687,7 +679,7 @@ def fed_broadcast(bot: Bot, update: Update, args: List[str]):
         try:
             broadcaster = user.first_name
         except:
-            broadcaster = user.first_name + " " + user.last_name
+            broadcaster = f'{user.first_name} {user.last_name}'
         text += "\n\n- {}".format(mention_markdown(user.id, broadcaster))
         chat_list = sql.all_fed_chats(fed_id)
         failed = 0
